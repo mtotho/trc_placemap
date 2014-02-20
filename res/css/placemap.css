@@ -1,0 +1,18 @@
+*{
+	font-family:Helvetica;
+}
+
+header{
+	padding:0.5em 0.5em 0.5em 0.5em;
+	height:2.5em;
+	background:#8BA870;
+	border-bottom:1px solid #4A7023;
+}
+header h1{
+	font-size:1.75em;
+	line-height:0.875em;
+}
+
+#map_canvas{
+	width:100%;
+}
