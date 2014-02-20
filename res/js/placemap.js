@@ -15,10 +15,7 @@ $(document).ready(function(){
 	window.UI = new UI();
 
 	//Set up user token
-	window.USER={
-			"userId":1,
-			"userToken":"planner"
-	};
+	check_user_cookie();
 
 	//Load welcome splash
 	window.UI.show_welcome();
@@ -29,7 +26,23 @@ $(document).ready(function(){
 	autosize();
 });
 
+function check_user_cookie(){
+	
+	//check for user cookie
+		//if set, check expiration
+			//if not expired, set the user object
+			window.USER={
+				"userId":1,
+				"userToken":"planner",
+				"userName": "planner_dev"
+				//"userAccess": "planner";
+			};
 
+		//else expired, must login
+
+	//no cookie set, must login
+
+}
 
 function log_places(data){
 	console.log(data);

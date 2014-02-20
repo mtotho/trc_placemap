@@ -9,6 +9,8 @@ function gmap(){
 	this.center;
 	this.test=3;
 	this.map;
+	this.draggableMarker;
+	this.search_bar;
 
 	//initialize the map
 	this.initialize();
@@ -52,5 +54,33 @@ gmap.prototype.initialize=function(){
 		PlaceControlDiv.index = 1;
 		this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(PlaceControlDiv);
 
+		//this.show_search();
+}
+
+gmap.prototype.show_search=function(){
+	this.search_bar = document.createElement('input');
+	$(this.search_bar).attr("id", "pac-input");
+	$(this.search_bar).attr("class", "controls");
+	$(this.search_bar).attr("placeholder", "Search a location");
+
+
+  	this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(this.search_bar);
+
+
+	var searchBox = new google.maps.places.SearchBox(this.search_bar);
+
+	// [START region_getplaces]
+	// Listen for the event fired when the user selects an item from the
+	// pick list. Retrieve the matching places for that item.
+	google.maps.event.addListener(searchBox, 'places_changed', function() {
+		var places = searchBox.getPlaces();
+		
+
+		if(places.length==1){
+			address = places[0].formatted_address;
+
+			
+		}
+	});
 }
 
