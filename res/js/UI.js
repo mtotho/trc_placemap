@@ -26,7 +26,21 @@ UI.prototype.start_survey = function(place_response){
 	console.log(place);
 
 	var markers = place.markers;
-	
+
+	console.log(markers);
+
+	//Dont think this shuffle is working
+	markers = window.Helper.shuffle(markers);
+	var survey = new Survey();
+	survey.start();
+	//this.current_point=0;
+	//while(current_point<markers.length){
+
+	//	window.map.load_audit_point(markers[i]);
+
+
+		//alert("hit okay");
+	//}
 }
 
 

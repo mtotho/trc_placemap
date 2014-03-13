@@ -89,6 +89,13 @@ gmap.prototype.load_study_area=function(place){
 
 }
 
+//load a single audit point for evaluation
+gmap.prototype.load_audit_point = function(marker){
+	this.center = new google.maps.LatLng(marker.lat, marker.lng);
+	this.map.setCenter(this.center);
+	this.map.setZoom(18);
+}
+
 gmap.prototype.load_markers=function(markers_response){
 	markers=markers_response.markers;
 
