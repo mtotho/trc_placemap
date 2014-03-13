@@ -5,23 +5,25 @@
 
 $(document).ready(function(){
 
-	//set up vars
+	//set up environment vars
 	window.debug=true;
 
 	//Setup objects
 	window.Helper = new Helper();
+	window.Mapper = new Mapper();
 	window.API = new ApiConnector();
 	window.map = new gmap();
 	window.UI = new UI();
+
+	//Setup application objects
+	window.placesDict = null;
 
 	//Set up user token
 	check_user_cookie();
 
 	//Load welcome splash
-	window.UI.show_welcome();
-
-	//test api call
-	window.API.getPlaces(log_places);
+	window.UI.load();
+	
 
 	autosize();
 });
@@ -34,7 +36,8 @@ function check_user_cookie(){
 			window.USER={
 				"userId":1,
 				"userToken":"planner",
-				"userName": "planner_dev"
+				"userName": "planner_dev",
+				"userType": "planner"
 				//"userAccess": "planner";
 			};
 

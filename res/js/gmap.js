@@ -7,11 +7,20 @@ function gmap(){
 
 	//set up vars
 	this.center;
-	this.test=3;
 	this.map;
 	this.draggableMarker;
 	this.search_bar;
 
+	this.place_id=0;
+	this.markersDict=new Array();
+
+
+	//controls
+	this.btnAddPlace;
+	this.btnAddMarker;
+
+
+	this.instance=this;
 	//initialize the map
 	this.initialize();
 }
@@ -35,27 +44,76 @@ gmap.prototype.initialize=function(){
 		//The map variable
 		this.map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
+		this.draggableMarker = new google.maps.Marker({
+				    	map: null,
+				    	position:this.center,
+				    	draggable:true
+	    });
+
 		//setup map controls
-		var ResetMapControlDiv = document.createElement('div');
-		var ResetControl = new ResetMapControl(ResetMapControlDiv, this.map);
+		//var ResetMapControlDiv = document.createElement('div');
+		//var ResetControl = new ResetMapControl(ResetMapControlDiv, this.map);
 
-		ResetMapControlDiv.index = 1;
-		this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(ResetMapControlDiv);
+		//ResetMapControlDiv.index = 1;
+		//this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(ResetMapControlDiv);
 
-		var MarkerControlDiv = document.createElement('div');
-		var MarkerControl = new AddMarkerControl(MarkerControlDiv, this.map);
 
-		MarkerControlDiv.index = 1;
-		this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(MarkerControlDiv);
-
-		var PlaceControlDiv = document.createElement('div');
-		var PlaceControl = new AddPlaceControl(PlaceControlDiv, this.map);
-
-		PlaceControlDiv.index = 1;
-		this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(PlaceControlDiv);
 
 		//this.show_search();
 }
+
+gmap.prototype.load_study_area=function(place){
+	this.center = new google.maps.LatLng(place.lat, place.lng);
+	this.map.setCenter(this.center);
+	this.map.setZoom(place.zoom);
+
+	//set the current place_id
+	this.place_id=place.place_id;
+
+	//User is a planner, set the draggablemarker
+	if(window.USER.userType=="planner"){
+		this.draggableMarker.setMap(this.map);
+		this.draggableMarker.setPosition(this.center);
+
+		window.API.getMarkers(this.place_id, window.map.load_markers);
+
+		//load up the add marker button
+		if(window.Helper.isNull(window.map.btnAddMarker)){
+			this.btnAddMarker = document.createElement('div');
+			var MarkerControl = new AddMarkerControl(this.btnAddMarker, this.map);
+
+			this.btnAddMarker.index = 1;
+			this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(this.btnAddMarker);
+		}
+	}
+
+}
+
+gmap.prototype.load_markers=function(markers_response){
+	markers=markers_response.markers;
+
+	for(i=0; i<markers.length; i++){
+		window.map.load_marker(markers[i]);
+	}
+}
+
+gmap.prototype.load_marker=function(marker){
+	//map to api response to json marker
+	console.log(marker);
+	var json_marker = window.Mapper.mapMarker(marker);
+
+	//create the google map marker
+	var gmarker = new google.maps.Marker({
+		map:window.map.map,
+		position:new google.maps.LatLng(json_marker.lat, json_marker.lng),
+		icon:'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+	});
+
+	//add gmarker to map dictionary
+	window.map.markersDict[json_marker.marker_id]=gmarker;
+
+}
+
 
 gmap.prototype.show_search=function(){
 	this.search_bar = document.createElement('input');
@@ -79,7 +137,35 @@ gmap.prototype.show_search=function(){
 		if(places.length==1){
 			address = places[0].formatted_address;
 
-			
+			var geocoder = new google.maps.Geocoder();
+			geocoder.geocode({ 'address': address}, function(results, status){
+
+				if (status == google.maps.GeocoderStatus.OK) {
+				    lat=results[0].geometry.location.lat();
+				    lng=results[0].geometry.location.lng();
+
+				    center = new google.maps.LatLng(lat,lng);
+
+				    window.map.map.setCenter(center);
+				    window.map.map.setZoom(15);
+
+				    window.map.draggableMarker.setMap(window.map.map);
+				    window.map.draggableMarker.setPosition(center);
+
+				    //Only add the control if the button variable is null so we don't duplicate
+				    if(window.Helper.isNull(window.map.btnAddPlace)){
+
+					    window.map.btnAddPlace = document.createElement('div');
+						var PlaceControl = new AddPlaceControl(window.map.btnAddPlace, this.map);
+
+						window.map.btnAddPlace.index = 1;
+						window.map.map.controls[google.maps.ControlPosition.TOP_LEFT].push(window.map.btnAddPlace);
+					}
+
+				} else {
+				    console.log("Geocode was not successful for the following reason: " + status);
+				}
+			});
 		}
 	});
 }

@@ -39,7 +39,7 @@ function ApiConnector(){
                 dataType: "json",
                 success: function(data){
                    //console.log(data);
-                   // data = data.contents;
+                   //data = data.contents;
 
                     CALLBACK(data);
                 },
@@ -136,20 +136,48 @@ function ApiConnector(){
         }
     } // end pullApiData
 
+    // ----- place ----
 
+    ApiConnector.prototype.getPlace = function getPlace(place_id, callback){
+        var url = "/place?place_id="+place_id;
+        window.API.pullApiData(url, "GET", callback);
+    }
 
     ApiConnector.prototype.getPlaces = function getPlaces(callback){
         var url = "/place";
         window.API.pullApiData(url, "GET", callback);
     }
 
+    ApiConnector.prototype.postPlace = function postPlace(place, callback){
+        var url="/place";
+        var querytype="POST";
 
+        var json={
+                "place": place
+            };
 
+        var jsonString = JSON.stringify(json);
+        this.pushApiData(jsonString, url, querytype, callback);
+    }   
 
+    // ------ marker -----
 
+    ApiConnector.prototype.getMarkers = function getMarkers(place_id,callback){
+        var url="/marker?place_id="+place_id;
+        window.API.pullApiData(url, "GET", callback);
+    }
 
+    ApiConnector.prototype.postMarker = function postMarker(marker, callback){
+        var url="/marker";
+        var querytype="POST";
 
+        var json={
+            "marker":marker
+        };
 
+        var jsonString = JSON.stringify(json);
+        this.pushApiData(jsonString, url, querytype, callback);
+    }
 
 
 

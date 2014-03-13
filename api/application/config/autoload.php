@@ -109,7 +109,7 @@ $autoload['language'] = array();
 |
 */
 
-$autoload['model'] = array();
+$autoload['model'] = array('place_model', 'marker_model');
 
 
 /* End of file autoload.php */

@@ -3,7 +3,38 @@ function UI(){
 
 }
 
-UI.prototype.show_welcome=function(){
+UI.prototype.load = function(){
+
+	//Get the place_id in the url
+	window.map.place_id=window.Helper.getParameterByName("place_id");
+
+	//if the place_id is null, load up the welcome screen
+	if(window.Helper.isNull(window.map.place_id)){
+		window.API.getPlaces(window.UI.display_welcome);
+
+	//place_id is not null, should load this place
+	}else{
+		window.API.getPlace(window.map.place_id, window.UI.start_survey);	
+	}
+}
+
+UI.prototype.start_survey = function(place_response){
+	
+	var places = window.Mapper.mapPlaces(place_response);
+	var place = places[window.map.place_id];
+
+	console.log(place);
+
+	var markers = place.markers;
+	
+}
+
+
+UI.prototype.display_welcome=function(places_response){
+	
+	//set the window places variable to the array of places
+	//window.places = places_response.places;
+	window.Mapper.mapPlaces(places_response);
 
 	var html='';
 	html+='<div class="modal fade" id="welcome_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
@@ -21,10 +52,13 @@ UI.prototype.show_welcome=function(){
 		html+=      '<p>Existing study areas: </p>';
 		html+=			'<select id="ddStudyArea">';
 		html+=				'<option selected="selected" value="0">Create New</option>';
+		
+		for(key in window.placesDict){
+			var place = window.placesDict[key];
+			html+=          '<option value="' + place.place_id + '">'+ place.place_name +'</option>';
+		}
+
 		html+=			'</select>';
-
-
-
 
 	}
 
@@ -61,10 +95,22 @@ UI.prototype.show_welcome=function(){
 	$('#btnWelcomeGo').click(function(){
 		$("#welcome_modal").modal('toggle');
 		
-		window.UI.create_study_area();
+		var area_id = $("#ddStudyArea").val();
+		
+		//area_id selected is 0, create new one
+		if(area_id==0){
+			window.UI.create_study_area();
+		}else{
+
+			window.map.load_study_area(window.placesDict[area_id]);
+			//visit the selected study areas	
+		}
+
+		
 	});
 
 }
+
 
 UI.prototype.create_study_area = function(){
 
@@ -80,4 +126,8 @@ UI.prototype.create_study_area = function(){
 
 		//Delete search bar when done
 		//$("#SearchDiv").remove();
+}
+
+UI.prototype.debug = function(data){
+	console.log(data);
 }

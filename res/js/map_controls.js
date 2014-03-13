@@ -73,7 +73,7 @@ function AddMarkerControl(controlDiv, map) {
   // Set CSS for the control interior
   var controlText = document.createElement('div');
   controlText.style.fontFamily = 'Arial,sans-serif';
-  controlText.style.fontSize = '14px';
+  controlText.style.fontSize = '25px';
   controlText.style.paddingLeft = '4px';
   controlText.style.paddingRight = '4px';
   controlText.innerHTML = '<b>Add Marker</b>';
@@ -85,11 +85,21 @@ function AddMarkerControl(controlDiv, map) {
     if(window.debug)
 			console.log("btnAddMarker click event()");
 
-    /*
-		var center = window.map.draggablemarker.getPosition();
+		var center = window.map.draggableMarker.getPosition();
 		lat = center.lat();
 		lng = center.lng();
-		//window.api.markers.add({
+		place_id = window.map.place_id;
+    
+    var marker={
+      "lat": lat,
+      "lng": lng,
+      "place_id":place_id
+    };
+
+    window.API.postMarker(marker, window.map.load_marker)
+
+    //console.log(marker);
+    /*//window.api.markers.add({
 			placeid: window.map.place.pk_placeid,
 			//email: window.userEmail,
 			lat: lat,
@@ -123,7 +133,7 @@ function AddPlaceControl(controlDiv, map) {
   // Set CSS for the control interior
   var controlText = document.createElement('div');
   controlText.style.fontFamily = 'Arial,sans-serif';
-  controlText.style.fontSize = '14px';
+  controlText.style.fontSize = '25px';
   controlText.style.paddingLeft = '4px';
   controlText.style.paddingRight = '4px';
   controlText.innerHTML = '<b>Add Place</b>';
@@ -135,6 +145,21 @@ function AddPlaceControl(controlDiv, map) {
     if(window.debug)
 			console.log("btnAddPlace click event()");
 		
+    var area_center = window.map.draggableMarker.getPosition();
+    var lat = area_center.lat();
+    var lng = area_center.lng();  
+    var zoom = window.map.map.getZoom();
+
+    var place={
+      "name": "Downtown Burlington",
+      "lat": lat,
+      "lng": lng,
+      "zoom": zoom
+    }
+
+    window.API.postPlace(place, window.UI.debug)
+
+
   });
 
 }

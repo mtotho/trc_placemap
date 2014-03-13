@@ -5,6 +5,12 @@ author: Joshua Dickerson
 
 function Helper(){
 
+	Helper.prototype.getParameterByName =function getParameterByName(name){
+	    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+	        results = regex.exec(location.search);
+	    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	}	
 	// in JS there's a lot of ways that soemthign could be null
 	Helper.prototype.isNull = function isNull(testVar){
 		if(testVar == "undefined"){
