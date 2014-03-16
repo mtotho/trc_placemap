@@ -56,7 +56,11 @@ $(window).resize(function(){
 });
 
 function autosize(){
-	headerheight=$("header").outerHeight();
+	headerheight=$("header").outerHeight(true);
+	
 	windowheight=$(window).outerHeight();
+	windowheight-=0.025*windowheight;
+
 	$("#map_canvas").height(windowheight-headerheight);
+	$("#ui_panel").height(windowheight-headerheight);
 }

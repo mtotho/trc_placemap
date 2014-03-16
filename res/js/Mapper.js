@@ -20,9 +20,11 @@ Mapper.prototype.mapPlaces = function(place_response){
 			place.lat       =p.lat;
 			place.lng       =p.lng;
 			place.zoom      =parseInt(p.zoom);
-			
-			for(k=0; k<p.markers.length; k++){
-				place.markers[k]=window.Mapper.mapMarker(p.markers[k]);
+
+			if(!window.Helper.isNull(p.markers)){
+				for(k=0; k<p.markers.length; k++){
+					place.markers[k]=window.Mapper.mapMarker(p.markers[k]);
+				}
 			}
 
 			window.placesDict[place.place_id] = place;

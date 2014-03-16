@@ -151,7 +151,7 @@ function AddPlaceControl(controlDiv, map) {
     var zoom = window.map.map.getZoom();
 
     var place={
-      "name": "Downtown Burlington",
+      "name": "Downtown Burlington 2",
       "lat": lat,
       "lng": lng,
       "zoom": zoom

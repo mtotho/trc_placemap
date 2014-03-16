@@ -6,10 +6,12 @@ class mapper{
 		$required_count = 0;
 		$validate=array();
 
-
-		foreach($data as $key=>$val){
-			
+		//error_log(print_r($data,true));
+		//error_log($data['audit_type_id']);
+		foreach($data as $key => $val){
+			//error_log("key: " + print_r($key,true));
 			if(in_array($key, $req)){
+				//error_log("Derp");
 				$required_count++;
 			}
 		}

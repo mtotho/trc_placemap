@@ -136,6 +136,27 @@ function ApiConnector(){
         }
     } // end pullApiData
 
+    // ----- audit ----
+    ApiConnector.prototype.getAudit = function getAudit(audit_type_id, callback){
+        var url="/audit?audit_type_id="+audit_type_id;
+        window.API.pullApiData(url, "GET", callback);
+    }
+
+    // ----- response 
+    ApiConnector.prototype.postResponse = function postResponse(response, callback){
+        var url="/response";
+        var querytype="POST";
+
+        var json={
+                "response": response
+            };
+
+        var jsonString = JSON.stringify(json);
+
+        this.pushApiData(jsonString, url, querytype, callback);
+    }
+
+
     // ----- place ----
 
     ApiConnector.prototype.getPlace = function getPlace(place_id, callback){

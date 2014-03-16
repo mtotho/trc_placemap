@@ -5,17 +5,78 @@
 header{
 	padding:0.5em 0.5em 0.5em 0.5em;
 	height:2.5em;
-	background:#8BA870;
-	border-bottom:1px solid #4A7023;
+  margin-bottom:1em;
 }
 header h1{
+  padding:0;
+  margin:0;
+  color:white;
 	font-size:1.75em;
 	line-height:0.875em;
 }
+body,html{
+  width:100%;
+  /*background-image:url('../images/bg-nyc.jpg');*/
+}
+#container{
+  min-width:900px;
+  height:100%;
+  padding:0.5em 1em 0.5em;
+  background-color:rgba(5,5,5,0.5);
+  width:97%;
+  margin:0.5em auto 0 auto;
+}
 
 #map_canvas{
-	width:100%;
+	width:55%;
+  float:left;
+  margin-right:1%;
+  border:1px solid black;
+  box-shadow: 2px 2px 5px #888888;
 }
+
+/*ui_panel*/
+.ui_panel_frame{
+  width:30%;
+  float:left;
+  background:#F2F2F2;
+  padding:1em;
+  height:100%;
+  border:1px solid black;
+  box-shadow: 2px 2px 5px #888888;
+}
+.ui_panel_frame .btn{
+  font-size:3em;
+}
+.ui_panel_frame .audit_question{
+  
+}
+.ui_panel_frame .audit_question p{
+  font-size: 1.5em;
+  font-style:italic;
+  font-weight:bold;
+}
+
+.ui_panel_frame .audit_question label{
+  margin-right:0.5em;
+}
+.ui_panel_frame .audit_radio{
+    margin-right: 2em;
+}
+
+.ui_panel_frame h2{
+  margin-bottom:1em;
+}
+#lblProgress{
+  margin-bottom:0.5em;
+}
+#lblProgress span{
+  font-size:1em;
+}
+.ui_panel_frame .progress_bar{
+  min-height:40px;
+}
+
 
  .controls {
         margin-top: 16px;
@@ -48,3 +109,4 @@ header h1{
       .pac-container {
         font-family: Roboto;
       }
+}

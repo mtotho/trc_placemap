@@ -23,6 +23,7 @@ function gmap(){
 	this.instance=this;
 	//initialize the map
 	this.initialize();
+	this.pointMarker;
 }
 
 gmap.prototype.initialize=function(){
@@ -34,7 +35,7 @@ gmap.prototype.initialize=function(){
 		var mapOptions = {
 		      center:this.center,
 		      zoom: 10,
-		      mapTypeId: google.maps.MapTypeId.ROAD,
+		      mapTypeId: google.maps.MapTypeId.STREET,
 		      draggable:true,
 		      zoomControl: true,
 		      disableDoubleClickZoom:false,
@@ -93,7 +94,17 @@ gmap.prototype.load_study_area=function(place){
 gmap.prototype.load_audit_point = function(marker){
 	this.center = new google.maps.LatLng(marker.lat, marker.lng);
 	this.map.setCenter(this.center);
-	this.map.setZoom(18);
+	this.map.setZoom(20);
+
+	if(!window.Helper.isNull(this.pointMarker)){
+		this.pointMarker.setMap(null);
+	}
+
+	this.pointMarker = new google.maps.Marker({
+		map:this.map,
+		position:this.center,
+		icon:'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+	});
 }
 
 gmap.prototype.load_markers=function(markers_response){
