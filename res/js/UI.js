@@ -267,11 +267,17 @@ UIAuditPanel.prototype.draw=function(){
 	this.html+="    <div id='question_area'>" + this.question_area+"</div>";
 	this.html+="	<button id='btnRate' class='btn btn-info'>Next</button>";
 	this.html+="	<button id='btnSkip' class='btn'>Skip</button>";
+	this.html+="    <a id='clear_cookie'>clear cookie (debug)</a>";
 	this.html+="</div>";
 
 
 	$("#ui_panel").html("");
 	$("#ui_panel").html(this.html);
+
+	$("#clear_cookie").click(function(){
+		window.Helper.eraseCookie("participant_id");
+		location.reload();
+	});
 
 	$("#btnRate").click(function(){
 		var response = instance.readRadios();

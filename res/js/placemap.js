@@ -23,7 +23,10 @@ $(document).ready(function(){
 
 	//Load welcome splash
 	window.UI.load();
-	
+		
+	window.API.getResponses(2, function(data){
+		console.log(data);
+	})
 
 	autosize();
 });

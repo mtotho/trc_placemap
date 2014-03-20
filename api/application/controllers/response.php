@@ -7,6 +7,16 @@ class Response extends REST_Controller {
 
 	public function index_get(){
 		$planner_id=1;
+		$this->load->library('mappers/response_mapper');
+
+		$place_id = $this->get('place_id');
+
+		if($place_id!="" || $place_id!=null){
+			$map_results = $this->response_mapper->mapDBArray($place_id);
+
+			$this->response($map_results['data']);
+		}
+
 
 	}
 

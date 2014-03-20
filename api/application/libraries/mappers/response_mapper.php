@@ -4,10 +4,18 @@ require_once("mapper.php");
 class response_mapper extends mapper{
 
 	//format list of all places from that planner
-	public function mapDBArray($planner_id, $audit_type_id=null){
+	public function mapDBArray($place_id){
 		$CI=& get_instance();
 	
 		$map_results = array();
+
+		//error_log("place_id: " + $place_id);
+
+		$responses = $CI->response_model->getResponsesByPlace($place_id);
+
+		$map_results['success']=1;
+		$map_results['data']=$responses;
+
 
 		return $map_results;
 	}
