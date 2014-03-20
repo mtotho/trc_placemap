@@ -10,6 +10,7 @@ function gmap(){
 	this.map;
 	this.draggableMarker;
 	this.search_bar;
+	this.heatmapdict = new Array();
 
 	this.place_id=0;
 	this.markersDict=new Array();
@@ -35,7 +36,7 @@ gmap.prototype.initialize=function(){
 		var mapOptions = {
 		      center:this.center,
 		      zoom: 10,
-		      mapTypeId: google.maps.MapTypeId.STREET,
+		      mapTypeId: google.maps.MapTypeId.ROADMAP,
 		      draggable:true,
 		      zoomControl: true,
 		      disableDoubleClickZoom:false,
@@ -64,6 +65,7 @@ gmap.prototype.initialize=function(){
 }
 
 gmap.prototype.setUpHeatmap = function(data){
+	//console.log(data);
 	var mapOptions = {
 		center: new google.maps.LatLng(data.lat, data.lng),
 		zoom: parseInt(data.zoom)
@@ -72,6 +74,11 @@ gmap.prototype.setUpHeatmap = function(data){
 
 	var heatmapdata = new Array();
 	var markers = data.markers;
+	var heatmapdict = new Array();
+
+	var question_id = 3;
+
+
 	
 	for(i=0; i<markers.length; i++){
 		var m = markers[i];
@@ -79,49 +86,111 @@ gmap.prototype.setUpHeatmap = function(data){
 		var responses = m.responses;
 		var sum_response=0;
 		var weight = 0;
+		var ct=0;
+
 		
 		for(j=0; j<responses.length; j++){
 			r = responses[j];
-			sum_response+=parseInt(r.response);
+			
+
+			if(question_id==0){
+				sum_response+=parseInt(r.weight);
+				ct++;
+			}else{
+				//console.log(parseInt(r.weight));
+				//console.log(r.audit_question_id);
+				if(parseInt(r.audit_question_id)==question_id){
+					sum_response+=parseInt(r.weight);
+					ct++;
+					
+				}
+			}
+
+			//console.log(r.audit_question_id);
+			//If the heatmapdict doesnt have this key, add it
+			/*if(!(r.audit_question_id in heatmapdict)){
+				heatmapdict[r.audit_question_id]=new Array();
+				heatmapdict[r.audit_question_id].markers = new Array();
+				heatmapdict[r.audit_question_id].sum_response=0;
+				heatmapdict[r.audit_question_id].sum_response+=parseInt(r.response);
+			
+				//console.log("initial: " + window.map.heatmapdict[r.audit_question_id].sum_response);
+				heatmapdict[r.audit_question_id].question_text=r.question_text;
+			
+			//key exists, modify
+			}else{
+				//console.log("exists " + r.response);
+				console.log(heatmapdict[r.audit_question_id]);
+				heatmapdict[r.audit_question_id].sum_response+=parseInt(r.response);
+				console.log("After: " + heatmapdict[r.audit_question_id].sum_response);
+			}*/
+			//console.log("initial2: " + heatmapdict[r.audit_question_id].sum_response);
+
 		}
 
+
 		if(responses.length>0){
-			weight = sum_response/responses.length;
+
+			/*for(var key in heatmapdict){
+				
+				//console.log(window.map.heatmapdict[key].sum_response);
+				weight = (heatmapdict[key].sum_response)/markers.length;
+				//
+				//heatmapdict.sum_response=0;
+
+
+				var weightedmarker={
+					"location": new google.maps.LatLng(m.lat, m.lng),
+					"weight": weight
+				}
+
+				heatmapdict[key].markers.push(weightedmarker);
+
+			}*/
+					
+
+			weight = sum_response/ct;
 
 			var weightedmarker={
 				"location": new google.maps.LatLng(m.lat, m.lng),
 				"weight": weight
 			}
+
+
 			heatmapdata.push(weightedmarker);
 		}
+
 
 		//console.log("weight for marker " + m.marker_id + " is " + weight);
 	}
 
+
+	
+
 	console.log(heatmapdata);
 	var gradient = [
-    //'rgba(255, 0, 0, 0)',
-    //'rgba(255, 30, 0, 1)',
-    //'rgba(255, 10, 0, 0)',
+    'rgba(255, 0, 0, 0)',
+    'rgba(255, 10, 0, 1)',
+    'rgba(255, 30, 0, 1)',
     //'rgba(255, 50, 0, 0)',
     //'rgba(255, 70, 0, 0)',
-    'rgba(255, 90, 0, 0)',
-    'rgba(255, 110, 0, 1)',
-    'rgba(255, 130, 0, 1)',
-    'rgba(255, 145, 0, 1)',
-    'rgba(255, 165, 0, 1)',
-    'rgba(255, 180, 0, 1)',
+    'rgba(255, 80, 0, 1)',
+    //'rgba(255, 110, 0, 1)',
+    'rgba(255, 100, 0, 1)',
+    //'rgba(255, 145, 0, 1)',
+    //'rgba(255, 165, 0, 1)',
+    'rgba(255, 160, 0, 1)',
     'rgba(255, 200, 0, 1)',
-    'rgba(255, 210, 0, 1)',
+    //'rgba(255, 210, 0, 1)',
     'rgba(255, 221, 0, 1)',
     //'rgba(255, 251, 0, 1)',
     //'rgba(242, 255, 0, 1)',
     'rgba(212, 255, 0, 1)',
-    'rgba(180, 255, 0, 1)',
-    'rgba(160, 255, 0, 1)',
-    'rgba(140, 255, 0, 1)',
+    //'rgba(180, 255, 0, 1)',
+    'rgba(170, 255, 0, 1)',
+    //'rgba(140, 255, 0, 1)',
     'rgba(120, 255, 0, 1)',
-    'rgba(100, 255, 0, 1)',
+ //   'rgba(100, 255, 0, 1)',
     'rgba(0, 255, 0, 1)'
   ];
 
@@ -132,20 +201,34 @@ gmap.prototype.setUpHeatmap = function(data){
   	'rgba(133, 252, 0, 1)', //25%
   	'rgba(44, 255, 0, 1)',
   ]
+
+    var gradient3 = [
+    'rgba(0, 255, 255, 0)',
+    'rgba(0, 255, 255, 1)',
+    'rgba(0, 191, 255, 1)',
+    'rgba(0, 127, 255, 1)',
+    'rgba(0, 63, 255, 1)',
+    'rgba(0, 0, 255, 1)',
+    'rgba(0, 0, 223, 1)',
+    'rgba(0, 0, 191, 1)',
+    'rgba(0, 0, 159, 1)',
+    'rgba(0, 0, 127, 1)',
+    'rgba(90, 0, 91, 1)',
+    'rgba(150, 0, 63, 1)',
+    'rgba(191, 0, 31, 1)',
+    'rgba(255, 0, 0, 1)'
+  ]
   //gradient.reverse();
 	var heatmap = new google.maps.visualization.HeatmapLayer({
 	  data: heatmapdata,
-	  radius: 90,
+	  radius: 80,
 	  gradient: gradient,
 	  opacity: 0.4,
 	  dissipating:true
 	});
 
 	heatmap.setMap(window.map.map);
-
-
-
-
+	
 	//console.log(data);
 }
 
@@ -179,8 +262,33 @@ gmap.prototype.load_study_area=function(place){
 //load a single audit point for evaluation
 gmap.prototype.load_audit_point = function(marker){
 	this.center = new google.maps.LatLng(marker.lat, marker.lng);
-	this.map.setCenter(this.center);
-	this.map.setZoom(20);
+	
+	console.log(marker.view);
+
+	var options ={
+		center: this.center,
+		zoom: 20,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	}
+
+	switch(marker.view){
+		case "street":
+			//his.map.setMapTypeId(google.maps.MapTypeId.STREET);
+			break;
+
+		case "hybrid":
+			//this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+			options['mapTypeId']=google.maps.MapTypeId.HYBRID;
+			break;
+			
+		default:
+			//this.map.setMapTypeId(google.maps.MapTypeId.STREET);
+	}
+
+	//this.map.setCenter(this.center);
+	//this.map.setZoom(20);
+
+	this.map.setOptions(options);
 
 	if(!window.Helper.isNull(this.pointMarker)){
 		this.pointMarker.setMap(null);

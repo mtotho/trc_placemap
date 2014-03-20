@@ -89,11 +89,20 @@ function AddMarkerControl(controlDiv, map) {
 		lat = center.lat();
 		lng = center.lng();
 		place_id = window.map.place_id;
-    
+
+    var view ="";
+    if($("#chkSatellite").prop('checked')){
+      view = $("#chkSatellite").val();
+    }else{
+      view="street";
+    }
+
+
     var marker={
       "lat": lat,
       "lng": lng,
-      "place_id":place_id
+      "place_id":place_id,
+      "view": view
     };
 
     window.API.postMarker(marker, window.map.load_marker)
@@ -149,9 +158,9 @@ function AddPlaceControl(controlDiv, map) {
     var lat = area_center.lat();
     var lng = area_center.lng();  
     var zoom = window.map.map.getZoom();
-
+    
     var place={
-      "name": "Downtown Burlington 2",
+      "name": "Burlington Study Area",
       "lat": lat,
       "lng": lng,
       "zoom": zoom

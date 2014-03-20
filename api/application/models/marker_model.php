@@ -6,8 +6,9 @@ class marker_model extends CI_Model {
 		$sql = "insert into marker set
 					place_id = ?,
 					lat  = ?,
-					lng  = ?";
-		$this->db->query($sql, array($marker['place_id'], $marker['lat'], $marker['lng']));
+					lng  = ?,
+					view = ?";
+		$this->db->query($sql, array($marker['place_id'], $marker['lat'], $marker['lng'], $marker['view']));
 	}
 
 	public function getMarkers($place_id){
@@ -15,6 +16,7 @@ class marker_model extends CI_Model {
 					id as marker_id,
 					lat,
 					lng,
+					view,
 					place_id
 				from marker
 					where place_id=?";

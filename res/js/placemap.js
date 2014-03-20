@@ -57,7 +57,7 @@ $(window).resize(function(){
 });
 
 function autosize(){
-	verticalpadding=96 + 3;
+	verticalpadding=72 + 3;
 
 	headerheight=$("header").outerHeight(true);
 	navheight = $("nav").outerHeight(true)

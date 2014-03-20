@@ -2,7 +2,7 @@ function Survey(place){
 
 	//var instance=this;
 	this.markersDict=window.Mapper.mapMarkers(place.markers);
-	console.log(this.markersDict);
+	//console.log(this.markersDict);
 
 	//this.markers=window.Helper.shuffle(this.markers);
 	this.incompleted_markers= new Array();
@@ -15,7 +15,7 @@ function Survey(place){
 	this.participant_id=window.Helper.readCookie("participant_id");
 
 	window.UI.display_instructions();
-	
+
 	//Check to see if the participant id was a cookie value
 	if(window.Helper.isNull(this.participant_id)){
 		
@@ -60,6 +60,8 @@ Survey.prototype.syncProgress = function(completed_markers){
 		}
 	}
 
+	//shuffle markers
+	instance.survey.incompleted_markers=window.Helper.shuffle(instance.survey.incompleted_markers);
 
 	//console.log("responded marker count: " + this.responded_markers.length);
 	//console.log("total marker count: " + window.Helper.sizeof(this.markersDict));

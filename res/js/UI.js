@@ -2,6 +2,7 @@ function UI(){
 	//instance=this;
 	//this.place;
 	this.auditpanel;// = new UIAuditPanel();
+	this.heatmappanel;
 
 	$("#lnkAbout").click(function(){
 		window.UI.display_instructions();
@@ -26,7 +27,7 @@ UI.prototype.load = function(){
 	//Get the place_id in the url
 	window.map.place_id=window.Helper.getParameterByName("place_id");
 	var heatmap= window.Helper.getParameterByName("heatmap");
-	console.log(heatmap)
+	//console.log(heatmap)
 
 	//if the place_id is null, load up the welcome screen
 	if(window.Helper.isNull(window.map.place_id) && heatmap!="true"){
@@ -39,8 +40,9 @@ UI.prototype.load = function(){
 	
 	}else if(!window.Helper.isNull(window.map.place_id) && heatmap=="true"){
 		
-
-		window.API.getResponses(window.map.place_id, window.map.setUpHeatmap);
+		this.heatmappanel=new HeatmapPanel();
+		window.API.getResponses(window.map.place_id, this.heatmappanel.init);
+		//window.API.getResponses(window.map.place_id, window.map.setUpHeatmap);
 	}
 }
 
@@ -138,12 +140,73 @@ UI.prototype.display_welcome=function(places_response){
 		}else{
 
 			window.map.load_study_area(window.placesDict[area_id]);
+
+			var html="<label for='chkSatellite'>Satellite</label><input id='chkSatellite' type='checkbox' value='hybrid' />"
 			//visit the selected study areas	
+			$("#ui_panel").html(html);
 		}
 
 		
 	});
 
+}
+
+UI.prototype.display_thankyou = function(){
+	var html='';
+	html+='<div class="modal fade" id="thanks_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
+	html+=	'<div class="modal-dialog modal-lg">';
+	html+=		'<div class="modal-content">';
+	html+=			'<div class="modal-header">';
+	html+=          	'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+	html+=              '<h4 class="modal-title" id="myModalLabel">Thank You!</h4>';
+	html+=          '</div>';
+	html+=          '<div class="modal-body">';
+	html+=    			'<p>Thank you for participating in this place audit. Your feedback has joined other participants to help ';
+	html+=              'improve this neighborhood. You may view a heatmap visualization of the data collected for this study area by ';
+	html+=              'clicking the button below </p>';
+	html+=          '</div>';
+	html+=			'<div class="modal-footer">';
+  //  html+=          	'<button type="button" class="btn btn-default" data-dismiss="modal"></button>';
+    html+=          	'<button type="button" id="btnViewHeatmap" class="btn btn-primary">View Heatmap</button>';
+    html+=          '</div>';
+    html+=		'</div>';
+ 	html+=	'</div>';
+	html+='</div>';
+
+	//Set the UI handle html 
+	$("#ui_handle").html(html);
+
+	//enable and show the modal
+	$('#thanks_modal').modal();
+
+	//event when modal hide command is fired
+	$('#thanks_modal').on('hide.bs.modal', function(e){
+		
+	});
+
+	//event when modal finished hiding
+	$('#thanks_modal').on('hidden.bs.modal', function(e){
+		
+		
+		//Delete html content
+		$("#ui_handle").html("");
+	});
+
+	//event when "go" button is pressed within modal
+	$('#btnViewHeatmap').click(function(){
+		$("#thanks_modal").modal('toggle');
+		
+		var place_id=window.Helper.getParameterByName("place_id");
+
+		if(!window.Helper.isNull(place_id)){
+			var search = "?heatmap=true&place_id="+place_id;
+			window.location.search=search;
+			//window.location.reload();
+
+		//console.log(window.location);
+		}
+		
+	});
 }
 
 UI.prototype.display_instructions=function(){
@@ -164,8 +227,9 @@ UI.prototype.display_instructions=function(){
 	html+=								'Your planner has set up a study area that contains a hand selected group of intersections and midblocks. ';
 	html+=								'Each participant is asked to provide their feedback by rating each of these intersections and midblocks based on their prior ';
 	html+=								'knowledge of that spot. Participant responses will be used anonymously to provide data to the planner and to create a public ';
-	html+=								'visualizations of the participant responses.';
+	html+=								'visualization of the participant responses.';
 	html+=							'</p>';
+	html+=                          '<p>For more information, please visit the full <a href="about.html" target="_blank">about page</a></p>';
 	html+=						'</div>';
 	html+=					'</div>';
 
@@ -237,6 +301,195 @@ UI.prototype.debug = function(data){
 	console.log(data);
 }
 
+function HeatmapPanel(){
+
+	this.markers;
+	this.heatmap=null;
+	this.html=null;
+	this.study_area="";
+}
+
+HeatmapPanel.prototype.re_weigh = function(question_id){
+	var heatmapdata = new Array();
+	var markers = this.markers;
+	var heatmapdict = new Array();
+
+//	var question_id = 3;
+
+
+	
+	for(i=0; i<markers.length; i++){
+		var m = markers[i];
+		var place_id = m.place_id;
+		var responses = m.responses;
+		var sum_response=0;
+		var weight = 0;
+		var ct=0;
+
+		
+		for(j=0; j<responses.length; j++){
+			r = responses[j];
+			
+
+			if(question_id==0){
+				sum_response+=parseInt(r.weight);
+				ct++;
+			}else{
+				//console.log(parseInt(r.weight));
+				//console.log(r.audit_question_id);
+				if(parseInt(r.audit_question_id)==question_id){
+					sum_response+=parseInt(r.weight);
+					ct++;
+					
+				}
+			}
+
+		}
+
+
+		if(responses.length>0){
+
+			weight = sum_response/ct;
+
+			var weightedmarker={
+				"location": new google.maps.LatLng(m.lat, m.lng),
+				"weight": weight
+			}
+
+
+			heatmapdata.push(weightedmarker);
+		}
+
+
+		//console.log("weight for marker " + m.marker_id + " is " + weight);
+	}
+
+
+	
+
+//	console.log(heatmapdata);
+	var gradient = [
+    'rgba(255, 0, 0, 0)',
+    'rgba(255, 10, 0, 1)',
+    'rgba(255, 30, 0, 1)',
+    //'rgba(255, 50, 0, 0)',
+    //'rgba(255, 70, 0, 0)',
+    'rgba(255, 80, 0, 1)',
+    //'rgba(255, 110, 0, 1)',
+    'rgba(255, 100, 0, 1)',
+    //'rgba(255, 145, 0, 1)',
+    //'rgba(255, 165, 0, 1)',
+    'rgba(255, 160, 0, 1)',
+    'rgba(255, 200, 0, 1)',
+    //'rgba(255, 210, 0, 1)',
+    'rgba(255, 221, 0, 1)',
+    //'rgba(255, 251, 0, 1)',
+    //'rgba(242, 255, 0, 1)',
+    'rgba(212, 255, 0, 1)',
+    //'rgba(180, 255, 0, 1)',
+    'rgba(170, 255, 0, 1)',
+    //'rgba(140, 255, 0, 1)',
+    'rgba(120, 255, 0, 1)',
+ //   'rgba(100, 255, 0, 1)',
+    'rgba(0, 255, 0, 1)'
+  ];
+
+  var gradient2=[
+  	'rgba(255, 90, 0, 1)',  //100%
+  	'rgba(247, 94, 0, 1)', ///75%
+  	'rgba(250, 229, 0, 1)', //50%
+  	'rgba(133, 252, 0, 1)', //25%
+  	'rgba(44, 255, 0, 1)',
+  ]
+
+    var gradient3 = [
+    'rgba(0, 255, 255, 0)',
+    'rgba(0, 255, 255, 1)',
+    'rgba(0, 191, 255, 1)',
+    'rgba(0, 127, 255, 1)',
+    'rgba(0, 63, 255, 1)',
+    'rgba(0, 0, 255, 1)',
+    'rgba(0, 0, 223, 1)',
+    'rgba(0, 0, 191, 1)',
+    'rgba(0, 0, 159, 1)',
+    'rgba(0, 0, 127, 1)',
+    'rgba(90, 0, 91, 1)',
+    'rgba(150, 0, 63, 1)',
+    'rgba(191, 0, 31, 1)',
+    'rgba(255, 0, 0, 1)'
+  ]
+  //gradient.reverse();
+	var heatmap = new google.maps.visualization.HeatmapLayer({
+	  data: heatmapdata,
+	  radius: 80,
+	  gradient: gradient,
+	  opacity: 0.4,
+	  dissipating:true
+	});
+
+	console.log(this.heatmap);
+	if(!window.Helper.isNull(this.heatmap)){
+		this.heatmap.setMap(null);
+	}
+	
+	//console.log(window.map.map);
+	heatmap.setMap(window.map.map);
+	this.heatmap=heatmap;
+}
+
+HeatmapPanel.prototype.init = function(data){
+
+	window.UI.heatmappanel.study_area = data.place_name;
+	window.UI.heatmappanel.markers=data.markers;
+	
+	//console.log(data);
+	var mapOptions = {
+		center: new google.maps.LatLng(data.lat, data.lng),
+		zoom: parseInt(data.zoom)
+	}
+	window.map.map.setOptions(mapOptions);
+
+	window.UI.heatmappanel.re_weigh(0);
+
+	window.UI.heatmappanel.draw();
+}
+
+HeatmapPanel.prototype.draw = function(){
+	this.html="";
+	this.html+="<div class='ui_panel_frame' id='heatmap_panel'>";
+	this.html+="    <h2>Study Area: <span id='lblStudyArea' class='label label-info'>"+this.study_area+"</span></h2>";
+	
+	this.html+=     "<label for='ddFilter'>Filter</label>";
+	this.html+=     "<select id='ddFilter'>";
+	this.html+=     	"<option selected='selected' value=0>All Questions</option>";
+	this.html+=         "<option value=1>Feeling of safetly</option>";
+	this.html+=         "<option value=2>Overall attractiveness</option>";
+	this.html+=         "<option value=3>Mix of stores and services</option>";
+	this.html+=         "<option value=4>Ease of walking in location</option>";
+	this.html+=     "</select>";
+
+	//this.html+=" 
+	//this.html+="    <a id='clear_cookie'>clear cookie (debug)</a>";
+	this.html+="</div>";
+
+
+	$("#ui_panel").html("");
+	$("#ui_panel").html(this.html);
+
+	$("#ddFilter").change(function(){
+		var question_id = $(this).val();
+
+		window.UI.heatmappanel.re_weigh(question_id);
+	});
+
+}
+
+/*
+
+
+AUDIT PANEL
+
+*/
 
 function UIAuditPanel(place){
 	this.place=place;
@@ -304,11 +557,18 @@ UIAuditPanel.prototype.readRadios = function(){
 	marker=instance.survey.getCurrentMarker();
 	marker_id=marker.marker_id;
 	var responses = Array();
+	var checkedCt=0;
+
+	//console.log($(radiogroups).children());
+	//$(radiogroups).each(function(){
+	//	console.log();
+	//});
+
 
 	$(radiogroups).find('input').each(function(){
-	
+		//console.log(this);
 		if($(this).prop('checked')){
-
+			checkedCt++;
 			var radio_val = $(this).val();
 			var question_id_str = $(this).prop('name');
 			question_id_str=question_id_str.split("-");
@@ -317,7 +577,7 @@ UIAuditPanel.prototype.readRadios = function(){
 			response ={
 				"question_id":question_id,
 				"response": radio_val
-			};
+			}; 
 			
 			responses.push(response);
 		}
@@ -326,15 +586,23 @@ UIAuditPanel.prototype.readRadios = function(){
 		//$(this).prop('checked', false);  
 	});
 
-	var response={
-		"participant_id":instance.survey.participant_id,
-		"audit_type_id":1,
-		"marker_id":marker_id
-	};
+	if(checkedCt<radiogroups.length){
+		alert("Must select a radio button for each question");
+		return -1;
 
-	response['responses']=responses;
-	
-	return response;
+	}else{
+
+		var response={
+			"participant_id":instance.survey.participant_id,
+			"audit_type_id":1,
+			"marker_id":marker_id
+		};
+
+		response['responses']=responses;
+		
+		return response;
+
+	}
 }
 
 
@@ -348,7 +616,8 @@ UIAuditPanel.prototype.nextPoint = function(){
 	}else{
 
 		this.updateProgress();
-		alert("Finished");
+		window.UI.display_thankyou();
+		//alert("Finished");
 	}
 }
 
@@ -380,19 +649,24 @@ UIAuditPanel.prototype.draw=function(){
 		var response = instance.readRadios();
 		//console.log(response);
 
-		window.API.postResponse(response, function(data){
-			console.log(data);
-		});
+		if(response!=-1){
+			window.API.postResponse(response, function(data){
+				console.log(data);
+			});
 
 
-		if(instance.survey.hasNext()){
-			instance.resetRadios();
-			instance.survey.loadNext();
-			instance.updateProgress();
+			if(instance.survey.hasNext()){
+				instance.resetRadios();
+				instance.survey.loadNext();
+				instance.updateProgress();
+			}else{
+				window.UI.display_thankyou();
+				instance.updateProgress();
+				//alert("Finished");
+			}
+
 		}else{
 
-			instance.updateProgress();
-			alert("Finished");
 		}
 		//add response to database
 		//instance.nextPoint();
@@ -405,9 +679,9 @@ UIAuditPanel.prototype.draw=function(){
 			instance.survey.loadNext();
 			instance.updateProgress();
 		}else{
-
+			window.UI.display_thankyou();
 			instance.updateProgress();
-			alert("Finished");
+		
 		}
 	});
 }

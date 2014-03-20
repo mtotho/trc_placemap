@@ -48,6 +48,7 @@ Mapper.prototype.mapMarkers = function(markers){
 			marker.place_id  = m.place_id;
 			marker.lat       = m.lat;
 			marker.lng       = m.lng;
+			marker.view      = m.view;
 
 			//markersDict.push(marker);
 			markersDict[marker.marker_id]=marker;
@@ -69,6 +70,7 @@ Mapper.prototype.mapMarker = function(marker_response){
 		marker.place_id  = marker_response.place_id;
 		marker.lat       = marker_response.lat;
 		marker.lng       = marker_response.lng;
+		marker.view      = marker_response.view;
 
 	}catch(e){
 		console.log("error thrown mapping Marker " + marker_response.marker_id + ": "+e);

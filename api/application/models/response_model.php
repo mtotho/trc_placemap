@@ -53,15 +53,13 @@ class response_model extends CI_Model {
 
 			$sql2="select
 					qr.audit_question_id,
-					qr.audit_response_id,
-					qr.response,
 					ar.audit_type_id,
-					ar.participant_id,
+					sum(qr.response)/count(qr.audit_question_id) as weight,
 					aq.text as question_text					
 			   from question_response qr
 			   		inner join audit_response ar on ar.id=qr.audit_response_id
 			   		inner join audit_question aq on aq.id=qr.audit_question_id
-			   where ar.marker_id=".$marker_id;
+			   where ar.marker_id=".$marker_id." group by qr.audit_question_id";
 
 			$raw2 = $this->db->query($sql2);
 			$markers[$i]['responses']=$raw2->result_array();

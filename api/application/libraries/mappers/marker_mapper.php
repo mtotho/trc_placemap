@@ -19,7 +19,7 @@ class marker_mapper extends mapper{
 		$CI=& get_instance();
 		$map_results=array();
 
-		$validate=$this->validate($marker_post, array('place_id', 'lat', 'lng'));
+		$validate=$this->validate($marker_post, array('place_id', 'lat', 'lng', 'view'));
 
 		if($validate['valid']==1){
 			//Required vars present, post to db
