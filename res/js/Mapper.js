@@ -11,7 +11,7 @@ Mapper.prototype.mapPlaces = function(place_response){
 		
 	try{
 			p = places[i];
-			console.log(i);	
+			
 			var place = new Place();
 	
 			//console.log(place);
@@ -36,6 +36,30 @@ Mapper.prototype.mapPlaces = function(place_response){
 	return window.placesDict;
 	//window.places=places;
 }
+
+Mapper.prototype.mapMarkers = function(markers){
+	var markersDict =new Array();
+
+	for(i=0; i<markers.length; i++){
+		m = markers[i];
+		var marker = new Marker();
+		try{
+			marker.marker_id = m.marker_id;
+			marker.place_id  = m.place_id;
+			marker.lat       = m.lat;
+			marker.lng       = m.lng;
+
+			//markersDict.push(marker);
+			markersDict[marker.marker_id]=marker;
+		}catch(e){
+			console.log("error thrown mapping marker " + m.marker_id + ": "+e);
+		}
+
+	}
+
+	return markersDict;
+}
+
 
 Mapper.prototype.mapMarker = function(marker_response){
 

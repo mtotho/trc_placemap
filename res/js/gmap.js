@@ -63,6 +63,92 @@ gmap.prototype.initialize=function(){
 		//this.show_search();
 }
 
+gmap.prototype.setUpHeatmap = function(data){
+	var mapOptions = {
+		center: new google.maps.LatLng(data.lat, data.lng),
+		zoom: parseInt(data.zoom)
+	}
+	window.map.map.setOptions(mapOptions);
+
+	var heatmapdata = new Array();
+	var markers = data.markers;
+	
+	for(i=0; i<markers.length; i++){
+		var m = markers[i];
+		var place_id = m.place_id;
+		var responses = m.responses;
+		var sum_response=0;
+		var weight = 0;
+		
+		for(j=0; j<responses.length; j++){
+			r = responses[j];
+			sum_response+=parseInt(r.response);
+		}
+
+		if(responses.length>0){
+			weight = sum_response/responses.length;
+
+			var weightedmarker={
+				"location": new google.maps.LatLng(m.lat, m.lng),
+				"weight": weight
+			}
+			heatmapdata.push(weightedmarker);
+		}
+
+		//console.log("weight for marker " + m.marker_id + " is " + weight);
+	}
+
+	console.log(heatmapdata);
+	var gradient = [
+    //'rgba(255, 0, 0, 0)',
+    //'rgba(255, 30, 0, 1)',
+    //'rgba(255, 10, 0, 0)',
+    //'rgba(255, 50, 0, 0)',
+    //'rgba(255, 70, 0, 0)',
+    'rgba(255, 90, 0, 0)',
+    'rgba(255, 110, 0, 1)',
+    'rgba(255, 130, 0, 1)',
+    'rgba(255, 145, 0, 1)',
+    'rgba(255, 165, 0, 1)',
+    'rgba(255, 180, 0, 1)',
+    'rgba(255, 200, 0, 1)',
+    'rgba(255, 210, 0, 1)',
+    'rgba(255, 221, 0, 1)',
+    //'rgba(255, 251, 0, 1)',
+    //'rgba(242, 255, 0, 1)',
+    'rgba(212, 255, 0, 1)',
+    'rgba(180, 255, 0, 1)',
+    'rgba(160, 255, 0, 1)',
+    'rgba(140, 255, 0, 1)',
+    'rgba(120, 255, 0, 1)',
+    'rgba(100, 255, 0, 1)',
+    'rgba(0, 255, 0, 1)'
+  ];
+
+  var gradient2=[
+  	'rgba(255, 90, 0, 1)',  //100%
+  	'rgba(247, 94, 0, 1)', ///75%
+  	'rgba(250, 229, 0, 1)', //50%
+  	'rgba(133, 252, 0, 1)', //25%
+  	'rgba(44, 255, 0, 1)',
+  ]
+  //gradient.reverse();
+	var heatmap = new google.maps.visualization.HeatmapLayer({
+	  data: heatmapdata,
+	  radius: 90,
+	  gradient: gradient,
+	  opacity: 0.4,
+	  dissipating:true
+	});
+
+	heatmap.setMap(window.map.map);
+
+
+
+
+	//console.log(data);
+}
+
 gmap.prototype.load_study_area=function(place){
 	this.center = new google.maps.LatLng(place.lat, place.lng);
 	this.map.setCenter(this.center);

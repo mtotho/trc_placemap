@@ -7,7 +7,6 @@ class Participant extends REST_Controller {
 
 	public function index_get(){
 		$planner_id=1;
-
 	}
 
 	public function index_post(){

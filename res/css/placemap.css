@@ -3,53 +3,84 @@
 }
 
 header{
-	padding:0.5em 0.5em 0.5em 0.5em;
-	height:2.5em;
-  margin-bottom:1em;
+  width:100%;
+	padding:0.5em 0 0.75em 4em;
+	height:8em;
+  background-color:#F1F1F1;
+ 
+}
+
+header img{
+  height:7.5em;
+  float:left;
+  display:inline;
 }
 header h1{
   padding:0;
   margin:0;
-  color:white;
-	font-size:1.75em;
-	line-height:0.875em;
+  color:#54885A;
+  text-shadow: 1px 1px #888888;
+	font-size:3.5em;
+	line-height:2em;
 }
+nav{
+  
+  width:100%;
+  background-color:#444444;
+  border-bottom:solid 1px #414141;
+  border-top:solid 1px #414141;
+  padding-left:3em;
+}
+.navbar-custom{
+    background-color:#444444;
+    border-radius:0px;
+    margin-bottom:0;
+    font-size:1.5em;
+}
+.nav-container{
+
+}
+
 body,html{
   width:100%;
+  background-color:#E5E5E5;
   /*background-image:url('../images/bg-nyc.jpg');*/
 }
 #container{
   min-width:900px;
   height:100%;
-  padding:0.5em 1em 0.5em;
-  background-color:rgba(5,5,5,0.5);
-  width:97%;
-  margin:0.5em auto 0 auto;
+  padding:48px 4em 48px 4em;
+  background-color:#FFFFFF;
+  /*background-color:rgba(5,5,5,0.5);*/
+  width:85%;
+  /*margin:0 auto 0 auto;
+ /* border-left: 1px solid black;*/
+  border-right:1px solid #d1d1d1;
 }
 
 #map_canvas{
 	width:55%;
   float:left;
-  margin-right:1%;
-  border:1px solid black;
+  margin-right:2%;
+  border:1px solid #d1d1d1;
   box-shadow: 2px 2px 5px #888888;
 }
 
 /*ui_panel*/
 .ui_panel_frame{
-  width:30%;
+  width:43%;
   float:left;
-  background:#F2F2F2;
+  background:#F5F5F5;
   padding:1em;
   height:100%;
-  border:1px solid black;
+  border:1px solid #d1d1d1;
   box-shadow: 2px 2px 5px #888888;
 }
 .ui_panel_frame .btn{
   font-size:3em;
 }
 .ui_panel_frame .audit_question{
-  
+  background-color:white;
 }
 .ui_panel_frame .audit_question p{
   font-size: 1.5em;
@@ -69,6 +100,7 @@ body,html{
 }
 #lblProgress{
   margin-bottom:0.5em;
+  font-size:1.5em;
 }
 #lblProgress span{
   font-size:1em;
@@ -76,8 +108,39 @@ body,html{
 .ui_panel_frame .progress_bar{
   min-height:40px;
 }
+#info_modal .modal-dialog{
+  width: 80%;
+  height: 80%;
+  padding: 0;
+}
+#info_modal .modal-content{
+  height: 100%;
+  border-radius: 2;
+}
+#info_modal .modal-title{
+  color:green;
+  font-size: 3em;
+}
+#info_modal .btn-primary{
+  position:relative;
+  width:50%;
+  height: 3em;
+  font-size: 3em;
+  right:25%;
+}
+#info_modal h5{
+  font-size: 3em;
+  font-weight:bold;
+}
+#info_modal p{
+  font-size:2em;
+}
 
-
+#info_modal li{
+  font-size: 2em;
+  list-style-type:none;
+  margin-bottom:1em;
+}
  .controls {
         margin-top: 16px;
         border: 1px solid transparent;
@@ -109,4 +172,5 @@ body,html{
       .pac-container {
         font-family: Roboto;
       }
+}
 }

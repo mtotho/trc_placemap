@@ -145,6 +145,12 @@ function ApiConnector(){
         window.API.pushApiData(jsonString, url, querytype, callback);
     }
 
+    ApiConnector.prototype.getParticipantProgress = function getParticipantProgress(participant_id, place_id, callback){
+        var url="/response?place_id="+place_id+"&participant_id="+participant_id;
+        window.API.pullApiData(url, "GET", callback);
+    }
+
+
     // ----- audit ----
     ApiConnector.prototype.getAudit = function getAudit(audit_type_id, callback){
         var url="/audit?audit_type_id="+audit_type_id;

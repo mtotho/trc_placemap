@@ -10,6 +10,15 @@ function Helper(){
 	    return o;
 	}
 
+	Helper.prototype.sizeof = function sizeof(obj){
+
+	    var size = 0, key;
+	    for (key in obj) {
+	        if (obj.hasOwnProperty(key)) size++;
+	    }
+	    return size;
+	}
+
 	Helper.prototype.getParameterByName =function getParameterByName(name){
 	    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 	    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),

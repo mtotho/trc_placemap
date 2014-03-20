@@ -23,10 +23,8 @@ $(document).ready(function(){
 
 	//Load welcome splash
 	window.UI.load();
-		
-	window.API.getResponses(2, function(data){
-		console.log(data);
-	})
+
+	
 
 	autosize();
 });
@@ -59,11 +57,23 @@ $(window).resize(function(){
 });
 
 function autosize(){
+	verticalpadding=96 + 3;
+
 	headerheight=$("header").outerHeight(true);
+	navheight = $("nav").outerHeight(true)
+	console.log("header height: " + headerheight);
 	
 	windowheight=$(window).outerHeight();
-	windowheight-=0.025*windowheight;
+	//windowheight-=0.025*windowheight;
+	//containerheight=$("#container").outerHeight(true);
+	
+	var targetheight = windowheight-(navheight+headerheight+verticalpadding);
 
-	$("#map_canvas").height(windowheight-headerheight);
-	$("#ui_panel").height(windowheight-headerheight);
+	//console.log(windowheight);
+	//console.log(containerheight);
+
+	$("#map_canvas").height(targetheight);
+
+
+	$("#ui_panel").height(targetheight);
 }

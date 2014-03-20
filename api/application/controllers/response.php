@@ -10,11 +10,20 @@ class Response extends REST_Controller {
 		$this->load->library('mappers/response_mapper');
 
 		$place_id = $this->get('place_id');
+		$participant_id=$this->get('participant_id');
 
-		if($place_id!="" || $place_id!=null){
+		//error_log("derp");
+
+		//get all the responses for the place
+		if(($place_id!="" || $place_id!=null) && ($participant_id=="" || $participant_id==null)){
 			$map_results = $this->response_mapper->mapDBArray($place_id);
 
 			$this->response($map_results['data']);
+
+		//get a list of markers that this participant has responsed to
+		}elseif(($participant_id!="" || $participant_id!=null) && ($place_id!="" || $place_id!=null)){
+			$markers = $this->participant_model->get_responded($participant_id, $place_id);
+			$this->response($markers);
 		}
 
 

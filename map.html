@@ -14,7 +14,7 @@
 			<script src="res/bootstrap-3.1.1/js/bootstrap.min.js"></script>
 
 			<!--Google Maps API v3 w/ API key-->
-			<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyAHDR09KWWgVoyFCoavaoHm2cCAHX5VL2g&sensor=false&libraries=places">
+			<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyAHDR09KWWgVoyFCoavaoHm2cCAHX5VL2g&sensor=false&libraries=places,visualization">
 		    		</script>
 			
 			<!--JS-->
@@ -46,12 +46,20 @@
 	</head>
 
 	<body>	
-		<div id="container">
-			<header>
+		<header>
+				<img src="res/images/icon.png" alt="icon" />
 				<h1>placemap</h1> 
-
-
-			</header>
+		</header>
+		<nav class="navbar navbar-custom" role="navigation">
+			<div class="nav-container">
+				<ul class="nav navbar-nav">
+			        <li><a id="lnkAbout" href="#">About</a></li>
+			        <li><a id="lnkHeatmap" href="#">Heatmap</a></li>
+		        </ul>
+			</div>
+		</nav>
+		<div id="container">
+			
 			<div id="ui_handle"></div>
 			<div id="map_canvas"></div>
 			<div id="ui_panel"></div>

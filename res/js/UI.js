@@ -1,7 +1,23 @@
 function UI(){
-
+	//instance=this;
 	//this.place;
 	this.auditpanel;// = new UIAuditPanel();
+
+	$("#lnkAbout").click(function(){
+		window.UI.display_instructions();
+	});
+
+	$("#lnkHeatmap").click(function(){
+		var place_id=window.Helper.getParameterByName("place_id");
+
+		if(!window.Helper.isNull(place_id)){
+			var search = "?heatmap=true&place_id="+place_id;
+			window.location.search=search;
+			//window.location.reload();
+
+		//console.log(window.location);
+		}
+	});
 
 }
 
@@ -9,15 +25,22 @@ UI.prototype.load = function(){
 
 	//Get the place_id in the url
 	window.map.place_id=window.Helper.getParameterByName("place_id");
+	var heatmap= window.Helper.getParameterByName("heatmap");
+	console.log(heatmap)
 
 	//if the place_id is null, load up the welcome screen
-	if(window.Helper.isNull(window.map.place_id)){
+	if(window.Helper.isNull(window.map.place_id) && heatmap!="true"){
 		window.API.getPlaces(window.UI.display_welcome);
 
 	//place_id is not null, should load this place
-	}else{
+	}else if(!window.Helper.isNull(window.map.place_id) && heatmap!="true"){
 
 		window.API.getPlace(window.map.place_id, window.UI.start_survey);	
+	
+	}else if(!window.Helper.isNull(window.map.place_id) && heatmap=="true"){
+		
+
+		window.API.getResponses(window.map.place_id, window.map.setUpHeatmap);
 	}
 }
 
@@ -123,6 +146,76 @@ UI.prototype.display_welcome=function(places_response){
 
 }
 
+UI.prototype.display_instructions=function(){
+
+	var html='';
+	html+='<div class="modal fade" id="info_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
+	html+=	'<div class="modal-dialog modal-lg">';
+	html+=		'<div class="modal-content">';
+	html+=			'<div class="modal-header">';
+	html+=          	'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+	html+=              '<h4 class="modal-title" id="myModalLabel">Welcome to Placemap</h4>';
+	html+=          '</div>';
+	html+=          '<div class="modal-body">';
+	html+=          	'<h5>About</h5>';
+	html+=              	'<div class="panel panel-default">';
+  	html+=						'<div class="panel-body">';
+	html+=              			'<p>Placemap is a tool used by Urban planners to perform various audits on a city or neighborhood. ';
+	html+=								'Your planner has set up a study area that contains a hand selected group of intersections and midblocks. ';
+	html+=								'Each participant is asked to provide their feedback by rating each of these intersections and midblocks based on their prior ';
+	html+=								'knowledge of that spot. Participant responses will be used anonymously to provide data to the planner and to create a public ';
+	html+=								'visualizations of the participant responses.';
+	html+=							'</p>';
+	html+=						'</div>';
+	html+=					'</div>';
+
+	html+=          	'<h5>Instructions</h5>';
+	html+=              '<p>As a participant the placemap tool is extremely easy to use.</p>';
+	html+=				'<ul">';
+	html+=					  '<li><span class="glyphicon glyphicon-chevron-right"></span> Focus on the location indicated by the map marker</li>';
+	html+=					  '<li><span class="glyphicon glyphicon-chevron-right"></span> Based on your experience of the indicated location, answer each question</li>';
+	html+=					  '<li><span class="glyphicon glyphicon-chevron-right"></span> After selecting each radio button, click the Next button</li>';
+	html+=					  '<li><span class="glyphicon glyphicon-chevron-right"></span> If you are unfamiliar with the location represented, click the I don&apos;t know it button </li>';
+	html+=					  '<li><span class="glyphicon glyphicon-chevron-right"></span> At any point you may leave the survey. Your responses up to this point will be used</li>';
+	html+=				'</ul>';
+
+	html+=          '</div>';
+	html+=			'<div class="modal-footer">';
+  //  html+=          	'<button type="button" class="btn btn-default" data-dismiss="modal"></button>';
+    html+=          	'<button type="button" id="btnStart" class="btn btn-primary">Lets get started!</button>';
+    html+=          '</div>';
+    html+=		'</div>';
+ 	html+=	'</div>';
+	html+='</div>';
+
+	//Set the UI handle html 
+	$("#ui_handle").html(html);
+
+	//enable and show the modal
+	$('#info_modal').modal();
+
+	//event when modal hide command is fired
+	$('#info_modal').on('hide.bs.modal', function(e){
+		
+	});
+
+	//event when modal finished hiding
+	$('#info_modal').on('hidden.bs.modal', function(e){
+		
+		
+		//Delete html content
+		$("#ui_handle").html("");
+	});
+
+	//event when "go" button is pressed within modal
+	$('#btnStart').click(function(){
+		$("#info_modal").modal('toggle');
+		
+
+		
+	});
+}
+
 
 UI.prototype.create_study_area = function(){
 
@@ -158,8 +251,8 @@ function UIAuditPanel(place){
 	window.API.getAudit(1, this.loadQuestions);
 
 	//this.draw();
-	
-	this.survey.loadNext();
+
+	//this.survey.loadNext();
 }
 
 UIAuditPanel.prototype.loadQuestions = function(audit){
@@ -246,12 +339,15 @@ UIAuditPanel.prototype.readRadios = function(){
 
 
 UIAuditPanel.prototype.nextPoint = function(){
-	this.updateProgress();
+
 
 	if(this.survey.hasNext()){
 		this.resetRadios();
 		this.survey.loadNext();
+		this.updateProgress();
 	}else{
+
+		this.updateProgress();
 		alert("Finished");
 	}
 }
@@ -259,14 +355,14 @@ UIAuditPanel.prototype.nextPoint = function(){
 UIAuditPanel.prototype.draw=function(){
 	this.html="";
 	this.html+="<div class='ui_panel_frame' id='audit_panel'>";
-	this.html+="    <h2>Location: <span id='lblStudyArea' class='label label-info'>"+this.study_area+"</span></h2>";
+	this.html+="    <h2>Study Area: <span id='lblStudyArea' class='label label-info'>"+this.study_area+"</span></h2>";
 	this.html+="    <p id='lblProgress'><span class='label label-info'>Progress</span></p>"
 	this.html+="    <div class='progress'>";
 	this.html+="    	<div id='survey_progress' class='progress-bar' role='progressbar' style='width:0%'></div>";
 	this.html+="    </div>";
 	this.html+="    <div id='question_area'>" + this.question_area+"</div>";
 	this.html+="	<button id='btnRate' class='btn btn-info'>Next</button>";
-	this.html+="	<button id='btnSkip' class='btn'>Skip</button>";
+	this.html+="	<button id='btnSkip' class='btn'>I don&apos;t know it</button>";
 	this.html+="    <a id='clear_cookie'>clear cookie (debug)</a>";
 	this.html+="</div>";
 
@@ -280,18 +376,39 @@ UIAuditPanel.prototype.draw=function(){
 	});
 
 	$("#btnRate").click(function(){
+
 		var response = instance.readRadios();
 		//console.log(response);
 
 		window.API.postResponse(response, function(data){
 			console.log(data);
 		});
+
+
+		if(instance.survey.hasNext()){
+			instance.resetRadios();
+			instance.survey.loadNext();
+			instance.updateProgress();
+		}else{
+
+			instance.updateProgress();
+			alert("Finished");
+		}
 		//add response to database
-		instance.nextPoint();
+		//instance.nextPoint();
 	});
 
 	$("#btnSkip").click(function(){
-		instance.nextPoint();
+		
+		if(instance.survey.hasNext()){
+			instance.resetRadios();
+			instance.survey.loadNext();
+			instance.updateProgress();
+		}else{
+
+			instance.updateProgress();
+			alert("Finished");
+		}
 	});
 }
 
@@ -302,7 +419,7 @@ UIAuditPanel.prototype.setStudyArea=function(study_area){
 
 UIAuditPanel.prototype.updateProgress=function(){
 	var completion = Math.ceil(this.survey.getCompletion());
-	
+	//console.log("updating progress");
 
 	$("#survey_progress").attr("style", "width:"+completion+"%");
 	$("#survey_progress").html(completion+"%");
