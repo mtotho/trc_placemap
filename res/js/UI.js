@@ -141,7 +141,16 @@ UI.prototype.display_welcome=function(places_response){
 
 			window.map.load_study_area(window.placesDict[area_id]);
 
-			var html="<label for='chkSatellite'>Satellite</label><input id='chkSatellite' type='checkbox' value='hybrid' />"
+			//var html="<label for='chkSatellite'>Satellite</label><input id='chkSatellite' type='checkbox' value='hybrid' />";
+			html+="     <label for='rdoRoadmap'>Roadmap</label>";
+			html+=" 	<input id='rdoRoadmap' class='audit_radio' type='radio' name='rdoView' value='roadmap'>";
+			
+			html+="     <label for='rdoHybrid'>Hybrid</label>";
+			html+=" 	<input id='rdoHybrid' class='audit_radio' type='radio' name='rdoView' value='hybrid'>";
+			
+			html+="     <label for='rdoStreet'>Street</label>";
+			html+=" 	<input id='rdoStreet' class='audit_radio' type='radio' name='rdoView' value='street'>";
+		
 			//visit the selected study areas	
 			$("#ui_panel").html(html);
 		}
@@ -161,13 +170,12 @@ UI.prototype.display_thankyou = function(){
 	html+=              '<h4 class="modal-title" id="myModalLabel">Thank You!</h4>';
 	html+=          '</div>';
 	html+=          '<div class="modal-body">';
-	html+=    			'<p>Thank you for participating in this place audit. Your feedback has joined other participants to help ';
-	html+=              'improve this neighborhood. You may view a heatmap visualization of the data collected for this study area by ';
-	html+=              'clicking the button below </p>';
+	html+=    			'<p>Thank you for participating in this street audit. Your feedback will be used anonymously to help ';
+	html+=              'improve the streets in this neighborhood.';
 	html+=          '</div>';
 	html+=			'<div class="modal-footer">';
   //  html+=          	'<button type="button" class="btn btn-default" data-dismiss="modal"></button>';
-    html+=          	'<button type="button" id="btnViewHeatmap" class="btn btn-primary">View Heatmap</button>';
+    html+=          	'<button type="button" id="btnViewHeatmap" class="btn btn-primary">Okay</button>';
     html+=          '</div>';
     html+=		'</div>';
  	html+=	'</div>';
@@ -196,6 +204,8 @@ UI.prototype.display_thankyou = function(){
 	$('#btnViewHeatmap').click(function(){
 		$("#thanks_modal").modal('toggle');
 		
+		window.location="https://google.com";
+		/*
 		var place_id=window.Helper.getParameterByName("place_id");
 
 		if(!window.Helper.isNull(place_id)){
@@ -204,7 +214,7 @@ UI.prototype.display_thankyou = function(){
 			//window.location.reload();
 
 		//console.log(window.location);
-		}
+		}*/
 		
 	});
 }
@@ -224,27 +234,27 @@ UI.prototype.display_instructions=function(){
 	html+=              	'<div class="panel panel-default">';
   	html+=						'<div class="panel-body">';
 	html+=              			'<p>Placemap is a tool used by Urban planners to perform various audits on a city or neighborhood. ';
-	html+=								'Your planner has set up a study area that contains a hand selected group of intersections and midblocks. ';
-	html+=								'Each participant is asked to provide their feedback by rating each of these intersections and midblocks based on their prior ';
-	html+=								'knowledge of that spot. Participant responses will be used anonymously to provide data to the planner and to create a public ';
-	html+=								'visualization of the participant responses.';
+	html+=								'A study area has been created that includes intersections and as well as  mid block street locations. ';
+	html+=								'You will rate these street locations based on your prior  ';
+	html+=								'knowledge of that spot. Your responses will be anonymous and combined with other input to aggregate visualizations.';
 	html+=							'</p>';
-	html+=                          '<p>For more information, please visit the full <a href="about.html" target="_blank">about page</a></p>';
+	//html+=                          '<p>For more information, please visit the full <a href="about.html" target="_blank">about page</a></p>';
 	html+=						'</div>';
 	html+=					'</div>';
 
 	html+=          	'<h5>Instructions</h5>';
-	html+=              '<p>As a participant the placemap tool is extremely easy to use.</p>';
 	html+=				'<ul">';
-	html+=					  '<li><span class="glyphicon glyphicon-chevron-right"></span> Focus on the location indicated by the map marker</li>';
-	html+=					  '<li><span class="glyphicon glyphicon-chevron-right"></span> Based on your experience of the indicated location, answer each question</li>';
-	html+=					  '<li><span class="glyphicon glyphicon-chevron-right"></span> After selecting each radio button, click the Next button</li>';
-	html+=					  '<li><span class="glyphicon glyphicon-chevron-right"></span> If you are unfamiliar with the location represented, click the I don&apos;t know it button </li>';
+	html+=					  '<li><span class="glyphicon glyphicon-chevron-right"></span> Consider the location on the map indicated by the map marker</li>';
+	html+=					  '<li><span class="glyphicon glyphicon-chevron-right"></span> If you know the location, answer each question then click &quot;Next&quot;</li>';
+	html+=					  '<li><span class="glyphicon glyphicon-chevron-right"></span> If you are unfamiliar with the location, click &quot;Skip&quot; </li>';
 	html+=					  '<li><span class="glyphicon glyphicon-chevron-right"></span> At any point you may leave the survey. Your responses up to this point will be used</li>';
 	html+=				'</ul>';
-
 	html+=          '</div>';
 	html+=			'<div class="modal-footer">';
+	html+=          	'<div class="contact">';
+	html+=					'<p><em>For additional information please contact:</em></p>';
+	html+=					'<p>Michael Toth, <a href="mailto:mftoth@uvm.edu" target="_top">mftoth@uvm.edu</a></p>';
+	html+=              '</div>';
   //  html+=          	'<button type="button" class="btn btn-default" data-dismiss="modal"></button>';
     html+=          	'<button type="button" id="btnStart" class="btn btn-primary">Lets get started!</button>';
     html+=          '</div>';
@@ -369,12 +379,12 @@ HeatmapPanel.prototype.re_weigh = function(question_id){
 
 //	console.log(heatmapdata);
 	var gradient = [
-    'rgba(255, 0, 0, 0)',
-    'rgba(255, 10, 0, 1)',
-    'rgba(255, 30, 0, 1)',
+    'rgba(201, 201, 201, 0)',
+    'rgba(201, 201, 201, 1)',
+    'rgba(212, 212, 212, 1)',
     //'rgba(255, 50, 0, 0)',
     //'rgba(255, 70, 0, 0)',
-    'rgba(255, 80, 0, 1)',
+    'rgba(224, 204, 204, 1)',
     //'rgba(255, 110, 0, 1)',
     'rgba(255, 100, 0, 1)',
     //'rgba(255, 145, 0, 1)',
@@ -421,7 +431,7 @@ HeatmapPanel.prototype.re_weigh = function(question_id){
   //gradient.reverse();
 	var heatmap = new google.maps.visualization.HeatmapLayer({
 	  data: heatmapdata,
-	  radius: 80,
+	  radius: 90,
 	  gradient: gradient,
 	  opacity: 0.4,
 	  dissipating:true
@@ -527,11 +537,12 @@ UIAuditPanel.prototype.loadQuestions = function(audit){
 		html+="     <label for='radio-2-"+i+"'>3</label>";
 		html+=" 	<input id='radio-3-"+i+"' class='audit_radio' type='radio' name='question_id-"+question.question_id+"' value='3'>";
 		
-		html+="     <label for='radio-2-"+i+"'>4</label>";	
-		html+=" 	<input id='radio-4-"+i+"' class='audit_radio' type='radio' name='question_id-"+question.question_id+"' value='4'>";
-		
+
+		html+="     <label for='radio-2-"+i+"'>Not sure</label>";	
+		html+=" 	<input id='radio-4-"+i+"' class='audit_radio' type='radio' name='question_id-"+question.question_id+"' value='-1'>";
+		/*
 		html+="     <label for='radio-2-"+i+"'>5</label>";
-		html+=" 	<input id='radio-5-"+i+"' class='audit_radio' type='radio' name='question_id-"+question.question_id+"' value='5'>";
+		html+=" 	<input id='radio-5-"+i+"' class='audit_radio' type='radio' name='question_id-"+question.question_id+"' value='5'>";*/
 		html+=" </div>"
 		html+="</div>";
 	}
@@ -587,7 +598,7 @@ UIAuditPanel.prototype.readRadios = function(){
 	});
 
 	if(checkedCt<radiogroups.length){
-		alert("Must select a radio button for each question");
+		alert("Must select a radio button for each question or you may skip instead.");
 		return -1;
 
 	}else{
@@ -595,9 +606,11 @@ UIAuditPanel.prototype.readRadios = function(){
 		var response={
 			"participant_id":instance.survey.participant_id,
 			"audit_type_id":1,
-			"marker_id":marker_id
+			"marker_id":marker_id,
+			"zoom_changed": window.map.hasZoomed
 		};
 
+		//console.log("has zoomed?: " + window.map.hasZoomed);
 		response['responses']=responses;
 		
 		return response;
@@ -624,14 +637,15 @@ UIAuditPanel.prototype.nextPoint = function(){
 UIAuditPanel.prototype.draw=function(){
 	this.html="";
 	this.html+="<div class='ui_panel_frame' id='audit_panel'>";
-	this.html+="    <h2>Study Area: <span id='lblStudyArea' class='label label-info'>"+this.study_area+"</span></h2>";
-	this.html+="    <p id='lblProgress'><span class='label label-info'>Progress</span></p>"
+	this.html+="    <h2><span id='lblStudyArea' class='label label-info'>"+this.study_area+"</span></h2>";
+	this.html+="    <p id='lblProgress'><span class='label label-success'>Progress</span></p>"
 	this.html+="    <div class='progress'>";
 	this.html+="    	<div id='survey_progress' class='progress-bar' role='progressbar' style='width:0%'></div>";
 	this.html+="    </div>";
+	this.html+="    <p><em>Larger values indicate a more positive rating.</em></p>";
 	this.html+="    <div id='question_area'>" + this.question_area+"</div>";
 	this.html+="	<button id='btnRate' class='btn btn-info'>Next</button>";
-	this.html+="	<button id='btnSkip' class='btn'>I don&apos;t know it</button>";
+	this.html+="	<button id='btnSkip' class='btn'>Skip</button>";
 	this.html+="    <a id='clear_cookie'>clear cookie (debug)</a>";
 	this.html+="</div>";
 
@@ -645,6 +659,7 @@ UIAuditPanel.prototype.draw=function(){
 	});
 
 	$("#btnRate").click(function(){
+
 
 		var response = instance.readRadios();
 		//console.log(response);
@@ -674,6 +689,23 @@ UIAuditPanel.prototype.draw=function(){
 
 	$("#btnSkip").click(function(){
 		
+		marker=instance.survey.getCurrentMarker();
+		marker_id=marker.marker_id;
+		var responses = Array();
+
+		var response={
+			"participant_id":instance.survey.participant_id,
+			"audit_type_id":1,
+			"marker_id":marker_id,
+			"zoom_changed":false
+		};
+
+		response['responses']=responses;
+
+		window.API.postResponse(response, function(data){
+				console.log(data);
+		});
+
 		if(instance.survey.hasNext()){
 			instance.resetRadios();
 			instance.survey.loadNext();

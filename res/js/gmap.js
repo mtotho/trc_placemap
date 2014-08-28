@@ -25,6 +25,8 @@ function gmap(){
 	//initialize the map
 	this.initialize();
 	this.pointMarker;
+	this.panorama=null;
+	this.hasZoomed;
 }
 
 gmap.prototype.initialize=function(){
@@ -62,6 +64,12 @@ gmap.prototype.initialize=function(){
 
 
 		//this.show_search();
+		google.maps.event.addListener(this.map, 'zoom_changed', function() {
+    // 3 seconds after the center of the map has changed, pan back to the
+    // marker
+    		console.log("zoom changed");
+		   window.map.hasZoomed=true;
+  		});
 }
 
 gmap.prototype.setUpHeatmap = function(data){
@@ -261,18 +269,25 @@ gmap.prototype.load_study_area=function(place){
 
 //load a single audit point for evaluation
 gmap.prototype.load_audit_point = function(marker){
+	
 	this.center = new google.maps.LatLng(marker.lat, marker.lng);
 	
+	if(!window.Helper.isNull(this.panorama)){
+		this.panorama.setVisible(false);
+	}
 	console.log(marker.view);
+	console.log(marker.marker_id);
 
 	var options ={
 		center: this.center,
 		zoom: 20,
-		mapTypeId: google.maps.MapTypeId.ROADMAP
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+		disableDefaultUI:true,
+		draggable:false
 	}
 
 	switch(marker.view){
-		case "street":
+		case "roadmap":
 			//his.map.setMapTypeId(google.maps.MapTypeId.STREET);
 			break;
 
@@ -280,25 +295,45 @@ gmap.prototype.load_audit_point = function(marker){
 			//this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
 			options['mapTypeId']=google.maps.MapTypeId.HYBRID;
 			break;
+
+		case "street":
+
+			this.panorama = new google.maps.StreetViewPanorama(document.getElementById("map_canvas"), {
+				position:this.center
+			});
+			//this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+			//options['mapTypeId']=google.maps.MapTypeId.HYBRID;
+			this.map.setStreetView(this.panorama);
+			break;
+
+		case "roadmap":
+		case "hybrid":
+			
+			break;
 			
 		default:
 			//this.map.setMapTypeId(google.maps.MapTypeId.STREET);
 	}
 
+	if(marker.view=="roadmap" || marker.view=="hybrid"){
+		this.map.setOptions(options);
+
+			if(!window.Helper.isNull(this.pointMarker)){
+				this.pointMarker.setMap(null);
+			}
+
+			this.pointMarker = new google.maps.Marker({
+				map:this.map,
+				position:this.center,
+				icon:'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+		});	
+	}
+			
+	window.map.hasZoomed = false;
 	//this.map.setCenter(this.center);
 	//this.map.setZoom(20);
 
-	this.map.setOptions(options);
-
-	if(!window.Helper.isNull(this.pointMarker)){
-		this.pointMarker.setMap(null);
-	}
-
-	this.pointMarker = new google.maps.Marker({
-		map:this.map,
-		position:this.center,
-		icon:'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
-	});
+	
 }
 
 gmap.prototype.load_markers=function(markers_response){

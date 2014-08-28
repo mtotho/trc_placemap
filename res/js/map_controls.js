@@ -91,22 +91,29 @@ function AddMarkerControl(controlDiv, map) {
 		place_id = window.map.place_id;
 
     var view ="";
-    if($("#chkSatellite").prop('checked')){
+    /*if($("#rdoView").prop('checked')){
       view = $("#chkSatellite").val();
     }else{
       view="street";
     }
+*/
+    view = $("input:radio[name=rdoView]:checked").val();
+    
+    if(window.Helper.isNull(view)){
+      alert("must select a view");
+    }else{
+      console.log(view);
+      var marker={
+        "lat": lat,
+        "lng": lng,
+        "place_id":place_id,
+        "view": view
+      };
 
+      console.log(marker);
 
-    var marker={
-      "lat": lat,
-      "lng": lng,
-      "place_id":place_id,
-      "view": view
-    };
-
-    window.API.postMarker(marker, window.map.load_marker)
-
+      window.API.postMarker(marker, window.map.load_marker);
+   }
     //console.log(marker);
     /*//window.api.markers.add({
 			placeid: window.map.place.pk_placeid,
@@ -160,11 +167,13 @@ function AddPlaceControl(controlDiv, map) {
     var zoom = window.map.map.getZoom();
     
     var place={
-      "name": "Burlington Study Area",
+      "name": "Focus Group study area",
       "lat": lat,
       "lng": lng,
       "zoom": zoom
     }
+
+
 
     window.API.postPlace(place, window.UI.debug)
 

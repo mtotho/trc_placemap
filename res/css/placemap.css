@@ -5,13 +5,13 @@
 header{
   width:100%;
 	padding:0.5em 0 0.75em 3em;
-	height:8em;
+	height:6.5em;
   background-color:#F1F1F1;
  
 }
 
 header img{
-  height:7.5em;
+  height:6em;
   float:left;
   display:inline;
 }
@@ -21,7 +21,7 @@ header h1{
   color:#54885A;
   text-shadow: 1px 1px #888888;
 	font-size:3.5em;
-	line-height:2em;
+	line-height:1.6em;
 }
 nav{
   
@@ -49,7 +49,7 @@ body,html{
 #container{
   min-width:900px;
   height:100%;
-  padding:32px 3em 32px 3em;
+  padding:20px 1% 20px 1%;
   background-color:#FFFFFF;
   /*background-color:rgba(5,5,5,0.5);*/
   width:85%;
@@ -59,33 +59,38 @@ body,html{
 }
 
 #map_canvas{
-	width:55%;
+	width:56%;
   float:left;
-  margin-right:2%;
+  margin-right:1.5%;
   border:1px solid #d1d1d1;
   box-shadow: 2px 2px 5px #888888;
 }
 
 /*ui_panel*/
 .ui_panel_frame{
-  width:43%;
+  width:42%;
   float:left;
   background:#F5F5F5;
-  padding:1em;
+  padding:0em 1em 0.5em 1em;
   height:100%;
   border:1px solid #d1d1d1;
   box-shadow: 2px 2px 5px #888888;
 }
 .ui_panel_frame .btn{
-  font-size:2em;
+  font-size:1.25em;
 }
 .ui_panel_frame .audit_question{
   background-color:white;
+  height:4.2em;
+  padding-top:0.2em;
+  margin-bottom:1em;
 }
 .ui_panel_frame .audit_question p{
-  font-size: 1.5em;
+  font-size: 1.2em;
+  color:black;
   font-style:italic;
-  font-weight:bold;
+  font-weight:normal;
+  margin-bottom:0.2em;
 }
 
 .ui_panel_frame .audit_question label{
@@ -96,21 +101,22 @@ body,html{
 }
 
 .ui_panel_frame h2{
-  margin-bottom:1em;
+  font-size:1.75em;
+  margin-bottom:0.25em;
 }
 #lblProgress{
   margin-bottom:0.5em;
-  font-size:1.5em;
+  font-size:1.25em;
 }
 #lblProgress span{
-  font-size:1em;
+  font-size:0.75em;
 }
 .ui_panel_frame .progress_bar{
-  min-height:40px;
+  min-height:20px;
 }
 #info_modal .modal-dialog{
   width: 80%;
-  height: 90%;
+  height: auto;
   padding: 0;
 }
 #info_modal .modal-content{
@@ -119,25 +125,54 @@ body,html{
 }
 #info_modal .modal-title{
   color:green;
-  font-size: 3em;
+  font-size: 2em;
+  padding:0em;
+    padding-left:5px;
 }
+#info_modal .modal-header{
+  padding:0.5em;
+}
+
 #info_modal .btn-primary{
-  position:relative;
   width:30%;
   height: 2em;
   font-size: 2em;
-  right:35%;
+  float:right;
+  /*position:relative;
+
+ 
+  right:%;*/
 }
+#info_modal .modal-body{
+  padding:3px 16px 0px 16px;
+}
+#info_modal .modal-footer{
+  margin-top:0px;
+  padding-top: 10px;
+  padding-bottom:10px;
+}
+#info_modal .modal-footer .contact{
+  float:left;
+}
+#info_modal .modal-footer p{
+  float:none;
+  margin:0px;
+  text-align:left;
+}
+
 #info_modal h5{
-  font-size: 2em;
+  font-size: 1.4em;
   font-weight:bold;
 }
+#info_modal .panel-body{
+  padding-bottom:5px;
+}
 #info_modal p{
-  font-size:1.5em;
+  font-size:1.3em;
 }
 
 #info_modal li{
-  font-size: 1.5em;
+  font-size: 1.25em;
   list-style-type:none;
   margin-bottom:0.5em;
 }

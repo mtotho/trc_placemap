@@ -7,9 +7,10 @@ class response_model extends CI_Model {
 		$sql = "insert into audit_response set
 					audit_type_id=?,
 					participant_id=?,
-					marker_id=?";
+					marker_id=?,
+					zoom_changed=?";
 		$this->db->query($sql, 
-			array($response['audit_type_id'], $response['participant_id'], $response['marker_id']));
+			array($response['audit_type_id'], $response['participant_id'], $response['marker_id'], $response['zoom_changed']));
 
 		$audit_response_id = $this->db->insert_id();
 

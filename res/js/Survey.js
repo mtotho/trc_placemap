@@ -13,7 +13,7 @@ function Survey(place){
 
 	//Get the participant id from the cookie
 	this.participant_id=window.Helper.readCookie("participant_id");
-
+	this.cookie_placeid=window.Helper.readCookie("place_id");
 	window.UI.display_instructions();
 
 	//Check to see if the participant id was a cookie value
@@ -30,7 +30,7 @@ function Survey(place){
 	}
 
 	console.log("participant_id: " + this.participant_id);
-
+		
 	window.API.getParticipantProgress(this.participant_id, place.place_id, function(data){
 		instance.survey.syncProgress(data);
 

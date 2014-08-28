@@ -57,13 +57,18 @@ $(window).resize(function(){
 });
 
 function autosize(){
-	verticalpadding=72 + 3;
+	
+
 
 	headerheight=$("header").outerHeight(true);
 	navheight = $("nav").outerHeight(true)
-	console.log("header height: " + headerheight);
+	console.log("nav height: " + navheight);
 	
 	windowheight=$(window).outerHeight();
+
+	container_vert_padding = 0.02*windowheight;
+	verticalpadding=42;
+
 	//windowheight-=0.025*windowheight;
 	//containerheight=$("#container").outerHeight(true);
 	

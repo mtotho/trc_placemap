@@ -28,7 +28,7 @@ class response_mapper extends mapper{
 
 
 		$validate=$this->validate($response_post, array('participant_id', 'audit_type_id', 'marker_id', 
-			'responses'));
+			'responses', 'zoom_changed'));
 
 		if($validate['valid']==1){
 			error_log("valid");
