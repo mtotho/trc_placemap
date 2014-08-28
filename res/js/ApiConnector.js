@@ -2,7 +2,7 @@ function ApiConnector(){
     // this.BASE = "https://localhost/~ddcjoshuad/UVMRecruiter/api";
     // for proxying local requests to the VM
     this.PROXYBASE = "";
-    this.BASE = "http://localhost/trc/api";
+    this.BASE = "http://localhost/trc_placemap/api";
     this.user = {};
     this.user['id'] = "1" ;
     this.user['token'] = "planner";
@@ -44,6 +44,7 @@ function ApiConnector(){
                     CALLBACK(data);
                 },
                 error: function(xhr, errorType, error){
+                    console.log(xhr);
                     // alert("error when trying to initialize connection to the api");
                     switch(xhr.status){
                         case 500:
@@ -105,6 +106,7 @@ function ApiConnector(){
                     }
                 },
                 error: function(xhr, errorType, error){
+                    console.log(xhr);
                     alert("error when trying to initialize connection to the api");
                     switch(xhr.status){
                         case 500:

@@ -243,8 +243,9 @@ gmap.prototype.setUpHeatmap = function(data){
 gmap.prototype.load_study_area=function(place){
 	this.center = new google.maps.LatLng(place.lat, place.lng);
 	this.map.setCenter(this.center);
-	this.map.setZoom(place.zoom);
+	this.map.setZoom(parseInt(place.zoom));
 
+	$(".addPlaceControl").remove();
 	//set the current place_id
 	this.place_id=place.place_id;
 
@@ -398,6 +399,11 @@ gmap.prototype.show_search=function(){
 
 				    window.map.draggableMarker.setMap(window.map.map);
 				    window.map.draggableMarker.setPosition(center);
+
+
+				    var namebox = "";
+				    namebox="<input type='text' id='txtAreaName' placeholder='Study Area Name'/>";
+				    $("#ui_panel").html(namebox);
 
 				    //Only add the control if the button variable is null so we don't duplicate
 				    if(window.Helper.isNull(window.map.btnAddPlace)){

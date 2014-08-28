@@ -10,6 +10,11 @@ class place_model extends CI_Model {
 					zoom = ?,
 					planner_id=?";
 		$this->db->query($sql, array($place['name'], $place['lat'], $place['lng'], $place['zoom'], $planner_id));
+
+		$id = $this->db->insert_id();
+		$place['id']=$id;
+
+		return $place;
 	}
 
 	public function getPlace($place_id){
