@@ -158,15 +158,19 @@ function AddPlaceControl(controlDiv, map) {
     var lat = area_center.lat();
     var lng = area_center.lng();  
     var zoom = window.map.map.getZoom();
-    
+    var name = $("#txtAreaName").val();
     var place={
-      "name": "Burlington Study Area",
+      "name": name,
       "lat": lat,
       "lng": lng,
       "zoom": zoom
     }
 
-    window.API.postPlace(place, window.UI.debug)
+    window.API.postPlace(place, function(data){
+      var place = data;
+      //console.log(data);
+      window.map.load_study_area(place);
+    })
 
 
   });

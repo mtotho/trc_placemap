@@ -33,9 +33,9 @@ class place_mapper extends mapper{
 
 		if($validate['valid']==1){
 			//Required vars present, post to db
-			$CI->place_model->postPlace($place_post, $planner_id);
+			$posted_place = $CI->place_model->postPlace($place_post, $planner_id);
 			$map_results['success']=1;
-			$map_results['data'] = $place_post;
+			$map_results['data'] = $posted_place;
 
 		}else{
 			$map_results['success']=0;

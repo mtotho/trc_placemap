@@ -141,7 +141,8 @@ UI.prototype.display_welcome=function(places_response){
 
 			window.map.load_study_area(window.placesDict[area_id]);
 
-			var html="<label for='chkSatellite'>Satellite</label><input id='chkSatellite' type='checkbox' value='hybrid' />"
+			var html="<label for='chkSatellite'>Satellite</label><input id='chkSatellite' type='checkbox' value='hybrid' />";
+			//var html="<label for='chkStreet'>Street</label><input id='chkSatellite' type='checkbox' value='hybrid' />";
 			//visit the selected study areas	
 			$("#ui_panel").html(html);
 		}
